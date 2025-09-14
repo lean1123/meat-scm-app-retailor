@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "meat-scm-app-retailor",
+    "slug": "meat-scm-app-retailor",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "meatscmappretailor",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.lean1123.meatscmappretailor"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": ["expo-secure-store", "expo-barcode-scanner"]
+  },
+  "plugins": [
+    "expo-router",
+    [
+      "expo-splash-screen",
+      {
+        "image": "./assets/images/splash-icon.png",
+        "imageWidth": 200,
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      }
+    ],
+    [
+      "expo-camera",
+      {
+        "cameraPermission": "Allow MeatSCM to access your camera to scan QR codes."
+      }
+    ]
+  ],
+  "experiments": {
+    "typedRoutes": true
+  }
+}

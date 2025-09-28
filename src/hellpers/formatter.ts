@@ -9,6 +9,7 @@ export const formatTimestamp = (isoString: string): string => {
     });
     return `${time} - ${day}`;
   } catch (error) {
+    console.error('Error formatting timestamp:', error);
     return 'Invalid Date';
   }
 };

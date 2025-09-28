@@ -1,55 +1,57 @@
-import { getShipmentByDriverId } from '@/src/api/driverApi';
-import { ShipmentResponse } from '@/src/types/shipment';
+import { useAuth } from '@/src/context/AuthContext';
+import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Text, View } from 'react-native';
+import HomeStatsGrid from '../../components/home/HomeStatsGrid';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import '../../../global.css';
-import TripItem from '../../components/confirmation/TripItem';
+
+interface InventoryStats {
+  totalBatches: number;
+  delivering: number;
+  sent: number;
+  received: number;
+}
+
+const FAKE_STATS: InventoryStats = {
+  totalBatches: 12,
+  delivering: 3,
+  sent: 5,
+  received: 4,
+};
 
 export default function HomeScreen() {
-  const [tab, setTab] = useState('Đang cần giao');
-  const [shipments, setShipments] = useState<ShipmentResponse[]>([]);
+  const { userToken } = useAuth();
+  const [stats, setStats] = useState<InventoryStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchShipmentsByDriverId = async () => {
-      try {
-        const res = await getShipmentByDriverId('driver-7fcc3acd');
-        setShipments(res);
-      } catch (error) {
-        console.error('Error fetching shipments:', error);
-      }
+    const fetchStats = async () => {
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setStats(FAKE_STATS);
+      setIsLoading(false);
     };
-
-    fetchShipmentsByDriverId();
+    fetchStats();
   }, []);
 
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
-      <View className="w-full h-36 bg-orange-500 top-0 rounded-b-2xl shadow-md">
-        <TouchableOpacity className="flex-row items-center absolute top-10 left-5 bg-white p-2 rounded-full shadow-md">
+      <View className="w-full h-36 bg-[#dfe1f9] top-0 rounded-b-2xl shadow-md mb-4">
+        <View className="flex-row items-center absolute top-10 left-5 bg-white p-2 rounded-full shadow-md">
           <Image src="https://picsum.photos/200" className="w-10 h-10 rounded-full mr-2" />
           <Text className="font-semibold">Xin chào! Thanh An</Text>
-        </TouchableOpacity>
-        <View className="flex-row w-full justify-center items-center mt-28">
-          {['Đang cần giao', 'Đã hoàn thành', 'Đơn mới'].map((t) => (
-            <TouchableOpacity
-              key={t}
-              onPress={() => setTab(t)}
-              className={`px-8 ${tab === t ? 'border-b-2 border-white' : ''}`}
-            >
-              <Text className={`${tab === t ? 'text-white' : 'text-white'} pb-1 font-medium`}>
-                {t}
-              </Text>
-            </TouchableOpacity>
-          ))}
         </View>
       </View>
-      <FlatList
-        data={shipments}
-        keyExtractor={(item) => item.shipmentID}
-        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
-        className="w-full"
-        renderItem={({ item, index }) => <TripItem item={item} index={index} />}
-      />
+
+      <View className="flex-1 w-full px-6">
+        <Text className="text-xl font-bold text-gray-800 mb-4">Tổng quan kho hàng</Text>
+        {isLoading || !stats ? (
+          <ActivityIndicator size="large" color="#4F46E5" />
+        ) : (
+          <HomeStatsGrid stats={stats} />
+        )}
+      </View>
     </SafeAreaView>
   );
 }

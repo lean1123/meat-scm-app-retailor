@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import FormInput from '../components/FormInput';
 
-// Kiểu dữ liệu cho các lỗi form
 type FormErrors = {
   name?: string;
   email?: string;

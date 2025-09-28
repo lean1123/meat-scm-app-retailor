@@ -61,6 +61,12 @@ const InitialLayout = () => {
             />
             <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="register" options={{ headerShown: false }} />
+            <Stack.Screen name="shipments/[id]" options={{ title: 'Chi tiết đơn hàng' }} />
+            <Stack.Screen name="shipments/index" options={{ title: 'Đơn hàng' }} />
+            <Stack.Screen name="asset/[id]" options={{ title: 'Chi tiết tài sản' }} />
+            <Stack.Screen name="asset/index" options={{ title: 'Tài sản' }} />
+            <Stack.Screen name="asset/sell" options={{ title: 'Hàng Hóa' }} />
+            <Stack.Screen name="asset/split" options={{ title: 'Chia đơn hàng' }} />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>

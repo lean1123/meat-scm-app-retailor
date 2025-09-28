@@ -24,7 +24,6 @@ export default function QRCode() {
     );
   }
 
-  // Hàm xử lý khi quét được mã
   const handleBarCodeScanned = ({ type, data }: { type: string; data: string }) => {
     if (!scanned) {
       setScanned(true);
@@ -34,7 +33,6 @@ export default function QRCode() {
     }
   };
 
-  // Hàm để quét lại
   const handleScanAgain = () => {
     setScanned(false);
     setScannedData(null);
@@ -42,30 +40,22 @@ export default function QRCode() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* Camera background */}
       <CameraView
         style={{ flex: 1 }}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
         facing="back"
       />
-
-      {/* Overlay */}
       <View className="absolute inset-0 justify-between items-center">
-        {/* Header */}
         <View className="w-full items-center bg-black/60 pt-5">
           <Text className="text-2xl font-bold text-white p-4">Quét mã QR</Text>
         </View>
-
-        {/* Viewfinder */}
         <View className="w-[250px] h-[250px] justify-center items-center">
           <View className="absolute top-0 left-0 w-10 h-10 border-t-[5px] border-l-[5px] border-white" />
           <View className="absolute top-0 right-0 w-10 h-10 border-t-[5px] border-r-[5px] border-white" />
           <View className="absolute bottom-0 left-0 w-10 h-10 border-b-[5px] border-l-[5px] border-white" />
           <View className="absolute bottom-0 right-0 w-10 h-10 border-b-[5px] border-r-[5px] border-white" />
         </View>
-
-        {/* Footer */}
         <View className="w-full items-center bg-black/60 pb-10">
           {scanned ? (
             <>

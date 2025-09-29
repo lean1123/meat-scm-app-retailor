@@ -3,6 +3,7 @@ import { View, Text, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapWithRoute from '@/src/components/map/MapWithRoute';
+import MapView from 'react-native-maps';
 
 // Fake data cho demo
 const FAKE_SHIPMENT = {
@@ -24,17 +25,12 @@ const ShipmentDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const shipment = FAKE_SHIPMENT; // Thay bằng fetch theo id nếu có API
 
-  // Kiểm tra trạng thái để xác định timeline
   const isDelivered = shipment.status === 'Đã nhận';
 
   return (
     <ScrollView className="flex-1 bg-gray-100" contentContainerStyle={{ padding: 16 }}>
-      {/* <View className="bg-white rounded-xl p-4 mb-2 shadow-sm">
-        
-      </View> */}
-
       <SafeAreaView style={{ flex: 1 }}>
-        <MapWithRoute />
+        <MapView className="w-full h-full" />
       </SafeAreaView>
 
       <Text className="text-lg font-bold my-4">Lịch sử vận chuyển</Text>

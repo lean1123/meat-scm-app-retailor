@@ -1,7 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-apply from: file("../../node_modules/react-native/react.gradle")
+
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
@@ -95,6 +95,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
         debug {
@@ -121,6 +122,14 @@ android {
     packagingOptions {
         jniLibs {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)
+        }
+        packagingOptions {
+            pickFirst '**/lib/**/libc++_shared.so'
+            pickFirst '**/lib/**/libjsi.so'
+            pickFirst '**/lib/**/libreactnativejni.so'
+            pickFirst '**/lib/**/libhermes.so'
+            pickFirst '**/lib/**/libglog_init.so'
+            pickFirst '**/lib/**/libfolly_json.so'
         }
     }
     androidResources {

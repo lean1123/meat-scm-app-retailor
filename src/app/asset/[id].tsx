@@ -56,7 +56,6 @@ const AssetDetail = () => {
     const fetchBatchDetails = async () => {
       setIsLoading(true);
       console.log(`Fetching details for batch: ${id}`);
-      // --- THAY THẾ BẰNG API THẬT Ở ĐÂY ---
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setBatchData(FAKE_BATCH_DATA);
       setIsLoading(false);

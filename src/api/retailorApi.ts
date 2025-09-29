@@ -1,6 +1,9 @@
 import axiosClient from './axiosClient';
 
 export const asset = {
+  fetchAssetByFacilityID: (facilityID: string) =>
+    axiosClient.get(`/facilities/${facilityID}/assets`),
+
   updateStorage: (assetID: string, details: any) =>
     axiosClient.post(`/assets/${assetID}/storage`, { details }),
 

@@ -1,10 +1,9 @@
 import { useAuth } from '@/src/context/AuthContext';
-import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Text, View } from 'react-native';
-import HomeStatsGrid from '../../components/home/HomeStatsGrid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import '../../../global.css';
+import HomeStatsGrid from '../../components/home/HomeStatsGrid';
 
 interface InventoryStats {
   totalBatches: number;

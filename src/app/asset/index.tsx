@@ -1,33 +1,9 @@
 import { View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-
-const FAKE_ASSETS = [
-  {
-    id: 'BATCH-001',
-    name: 'Lô hàng 1',
-    shipmentId: 'SHP-001',
-    type: 'Thịt bò',
-    status: 'Đã lưu kho',
-  },
-  { id: 'BATCH-002', name: 'Lô hàng 2', shipmentId: 'SHP-002', type: 'Thịt heo', status: 'Đã bán' },
-  {
-    id: 'BATCH-003',
-    name: 'Lô hàng 3',
-    shipmentId: 'SHP-003',
-    type: 'Thịt gà',
-    status: 'Đã lưu kho',
-  },
-  { id: 'BATCH-004', name: 'Lô hàng 4', shipmentId: 'SHP-004', type: 'Thịt bò', status: 'Đã bán' },
-  {
-    id: 'BATCH-005',
-    name: 'Lô hàng 5',
-    shipmentId: 'SHP-005',
-    type: 'Thịt heo',
-    status: 'Đã lưu kho',
-  },
-];
+import { asset } from '@/src/api/retailorApi';
+import { Asset } from '@/src/types/asset';
 
 const FILTERS = [
   { label: 'Tất cả', value: 'all' },
@@ -35,12 +11,39 @@ const FILTERS = [
   { label: 'Đã bán', value: 'Đã bán' },
 ];
 
+const MOCK_ASSETS: Asset[] = [
+  {
+    id: 'BATCH-001',
+    name: 'Lô thịt bò nhập khẩu',
+    shipmentId: 'SHP-001',
+    status: 'Đã lưu kho',
+    type: 'Thịt bò',
+  },
+];
+
+const facilityID = 'retailer-d';
+
 const AssetScreen = () => {
   const router = useRouter();
+  const [assets, setAssets] = useState<Asset[]>(MOCK_ASSETS);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
 
-  const filteredAssets = FAKE_ASSETS.filter((asset) => {
+  // useEffect(() => {
+  //   const fetchAssets = async () => {
+  //     try {
+  //       const res = await asset.fetchAssetByFacilityID(facilityID);
+  //       setAssets(Array.isArray(res.data) ? res.data : []);
+  //     } catch (error) {
+  //       console.error('Error fetching assets:', error);
+  //       setAssets([]);
+  //     }
+  //   };
+
+  //   fetchAssets();
+  // }, []);
+
+  const filteredAssets = assets?.filter((asset) => {
     const matchSearch =
       asset.name.toLowerCase().includes(search.toLowerCase()) ||
       asset.id.toLowerCase().includes(search.toLowerCase());

@@ -11,19 +11,20 @@ interface StorageDetails {
 interface SplitDetails {
   unitCount: string;
   unitIDPrefix: string;
+  parentAssetID: string;
 }
 
 interface AssetModalsProps {
   isUpdateStorageModalVisible: boolean;
   setUpdateStorageModalVisible: (v: boolean) => void;
   storageDetails: StorageDetails;
-  setStorageDetails: (v: StorageDetails) => void;
+  setStorageDetails: React.Dispatch<React.SetStateAction<StorageDetails>>;
   handleUpdateStorage: () => void;
 
   isSplitModalVisible: boolean;
   setSplitModalVisible: (v: boolean) => void;
   splitDetails: SplitDetails;
-  setSplitDetails: (v: SplitDetails) => void;
+  setSplitDetails: React.Dispatch<React.SetStateAction<SplitDetails>>;
   handleSplitToUnits: () => void;
 }
 
@@ -59,6 +60,18 @@ const AssetModals = ({
       onSubmit={handleUpdateStorage}
     >
       <TextInput
+        placeholder="Tên tổ chức (ownerOrgName)"
+        value={storageDetails.ownerOrgName}
+        onChangeText={(text) => setStorageDetails({ ...storageDetails, ownerOrgName: text })}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Tên cơ sở (facilityName)"
+        value={storageDetails.facilityName}
+        onChangeText={(text) => setStorageDetails({ ...storageDetails, facilityName: text })}
+        style={styles.input}
+      />
+      <TextInput
         placeholder="Ghi chú (ví dụ: Kho lạnh - Tủ đông số 2)"
         value={storageDetails.note}
         onChangeText={(text) => setStorageDetails({ ...storageDetails, note: text })}
@@ -83,6 +96,12 @@ const AssetModals = ({
         placeholder="Tiền tố ID sản phẩm"
         value={splitDetails.unitIDPrefix}
         onChangeText={(text) => setSplitDetails({ ...splitDetails, unitIDPrefix: text })}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Parent Asset ID (autogenerate or manual)"
+        value={splitDetails.parentAssetID || ''}
+        onChangeText={(text) => setSplitDetails({ ...splitDetails, parentAssetID: text })}
         style={styles.input}
       />
     </ActionModal>

@@ -1,4 +1,6 @@
-import { shipment } from '@/src/api/shipmentApi';
+import { asset } from '@/src/api/retailorApi';
+import { genId } from '@/src/hellpers/genID';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
@@ -11,6 +13,8 @@ export default function QRCode() {
   const [scannedData, setScannedData] = useState<string | null>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
+
+  const newPrefixID = genId();
 
   useFocusEffect(
     useCallback(() => {
@@ -53,18 +57,12 @@ export default function QRCode() {
 
         const confirmPickup = async () => {
           try {
-            const response = await shipment.deliver(shipmentID, {
+            const response = await asset.receive(shipmentID, {
               facilityID,
-              actualItems: [
-                {
-                  assetID,
-                  quantity: {
-                    value: quantityValue,
-                    unit: quantityUnit,
-                  },
-                },
-              ],
+              newAssetPrefix: newPrefixID,
             });
+
+            await AsyncStorage.setItem('newPrefixID', newPrefixID);
             console.log('Confirm pickup response:', response);
             Alert.alert('Thành công', 'Đã xác nhận nhận lô hàng');
           } catch (error) {

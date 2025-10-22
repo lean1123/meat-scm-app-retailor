@@ -18,19 +18,14 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.lean1123.meatscmappretailor",
-      "permissions": [
-        "android.permission.CAMERA"
-      ]
+      "permissions": ["android.permission.CAMERA"]
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-secure-store",
-      "expo-barcode-scanner"
-    ],
+    "plugins": ["expo-secure-store", "expo-barcode-scanner"],
     "extra": {
       "eas": {
         "projectId": "9b9b3587-46aa-466e-b9b4-24146ad95d29"
@@ -39,6 +34,7 @@
   },
   "plugins": [
     "expo-router",
+    "react-native-maps",
     [
       "expo-splash-screen",
       {

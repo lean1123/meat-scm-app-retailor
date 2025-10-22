@@ -1,38 +1,33 @@
-import { View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { asset } from '@/src/api/retailorApi';
-import { Asset } from '@/src/types/asset';
+import React, { useEffect, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 
-const FILTERS = [
-  { label: 'Tất cả', value: 'all' },
-  { label: 'Đã lưu kho', value: 'Đã lưu kho' },
-  { label: 'Đã bán', value: 'Đã bán' },
-];
+// const FILTERS = [
+//   { label: 'Tất cả', value: 'all' },
+//   { label: 'Đóng Gói', value: 'PACKAGED' },
+//   { label: 'Đã bán', value: 'STORED' },
+// ];
 
-const MOCK_ASSETS: Asset[] = [
-  {
-    id: 'BATCH-001',
-    name: 'Lô thịt bò nhập khẩu',
-    shipmentId: 'SHP-001',
-    status: 'Đã lưu kho',
-    type: 'Thịt bò',
-  },
-];
-
-const facilityID = 'retailer-d';
+// const facilityID = 'retailer-d';
 
 const AssetScreen = () => {
   const router = useRouter();
-  const [assets, setAssets] = useState<Asset[]>(MOCK_ASSETS);
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
+  // const [assets, setAssets] = useState<IAsset[]>([]);
+  // const [search, setSearch] = useState('');
+  // const [filter, setFilter] = useState('all');
 
   // useEffect(() => {
   //   const fetchAssets = async () => {
   //     try {
-  //       const res = await asset.fetchAssetByFacilityID(facilityID);
+  //       const res = await asset.fetchShipmentByFacilityID(facilityID);
+
+  //       if (res.status !== 200) {
+  //         console.error('Failed to fetch assets, status code:', res.status);
+  //         setAssets([]);
+  //         return;
+  //       }
+
   //       setAssets(Array.isArray(res.data) ? res.data : []);
   //     } catch (error) {
   //       console.error('Error fetching assets:', error);
@@ -43,21 +38,34 @@ const AssetScreen = () => {
   //   fetchAssets();
   // }, []);
 
-  const filteredAssets = assets?.filter((asset) => {
-    const matchSearch =
-      asset.name.toLowerCase().includes(search.toLowerCase()) ||
-      asset.id.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === 'all' ? true : asset.status === filter;
-    return matchSearch && matchFilter;
-  });
+  // const filteredAssets = assets?.filter((asset) => {
+  //   const matchSearch =
+  //     asset.productName?.toLowerCase().includes(search.toLowerCase()) ||
+  //     asset.assetID?.toLowerCase().includes(search.toLowerCase());
+  //   const matchFilter = filter === 'all' ? true : asset.status === filter;
+  //   return matchSearch && matchFilter;
+  // });
+
+  const [newPrefixID, setNewPrefixID] = useState<string | null>('hehe');
+
+  useEffect(() => {
+    const getNewPrefixID = async () => {
+      const storedPrefixID = await AsyncStorage.getItem('newPrefixID');
+      if (storedPrefixID) {
+        setNewPrefixID(storedPrefixID);
+      }
+    };
+
+    getNewPrefixID();
+  }, []);
 
   return (
     <View className="flex-1 bg-gray-100">
       <View className="pt-9 pb-4 bg-white items-center border-b border-gray-200">
-        <Text className="text-2xl font-bold text-gray-800">Kho hàng</Text>
+        <Text className="text-2xl font-bold text-primary">Kho Hàng Của Bạn</Text>
       </View>
 
-      <View className="bg-white px-4 py-3 border-b border-gray-200">
+      {/* <View className="bg-white px-4 py-3 border-b border-gray-200">
         <TextInput
           placeholder="Tìm kiếm theo tên, mã lô..."
           value={search}
@@ -67,6 +75,7 @@ const AssetScreen = () => {
       </View>
 
       <View className="bg-white px-4 py-2 border-b border-gray-200">
+        <Text className="text-primary mb-1 ml-2 font-semibold">Lọc theo trạng thái:</Text>
         <Picker
           selectedValue={filter}
           onValueChange={setFilter}
@@ -79,39 +88,64 @@ const AssetScreen = () => {
       </View>
 
       <FlatList
-        data={filteredAssets}
-        keyExtractor={(item) => item.id}
+        data={assets}
+        keyExtractor={(item) => item.assetID}
         contentContainerStyle={{ padding: 16, paddingTop: 8 }}
         renderItem={({ item }) => (
           <View className="bg-white rounded-xl p-4 mb-4 shadow-sm">
-            <TouchableOpacity onPress={() => router.push(`/asset/${item.id}`)} activeOpacity={0.7}>
-              <Text className="text-lg font-bold text-gray-800 mb-1">{item.name}</Text>
-              <Text className="text-gray-500">ID: {item.id}</Text>
-              <Text className="text-gray-600">Loại: {item.type}</Text>
+            <TouchableOpacity
+              onPress={() => router.push(`/asset/${item?.shipmentID}`)}
+              activeOpacity={0.7}
+            >
+              <Text className="text-lg font-bold text-gray-800 mb-1">{item?.productName}</Text>
+              <Text className="text-gray-600">ID: {item?.assetID}</Text>
+              <Text className="text-gray-600">
+                Số lượng: {item?.currentQuantity?.value} {item?.currentQuantity?.unit}
+              </Text>
+              {item?.parentAssetIDs && item.parentAssetIDs.length > 0 && (
+                <Text className="text-gray-600">Mã lô gốc: {item?.parentAssetIDs?.join(', ')}</Text>
+              )}
               <Text
                 className={
-                  item.status === 'Đã bán'
+                  item.status !== 'STORED'
                     ? 'text-red-500 font-semibold'
                     : 'text-green-500 font-semibold'
                 }
               >
-                Trạng thái: {item.status}
+                Trạng thái:{' '}
+                {item.status === 'PACKAGED' ? 'Đóng Gói' : item.status === 'STORED' ? 'Đã bán' : ''}
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => router.push(`/shipments/${item.shipmentId}`)}
-              className="mt-2 bg-indigo-600 rounded-lg py-2 items-center"
-              activeOpacity={0.8}
-            >
-              <Text className="text-white font-bold text-base">Xem lịch sử lô hàng</Text>
-            </TouchableOpacity>
+            {/* Nếu có  */}
+      {/* {item?.status === 'Đang vận chuyển' && (
+              <TouchableOpacity
+                onPress={() => router.push(`/shipments/${item.assetID}`)}
+                className="mt-2 bg-indigo-600 rounded-lg py-2 items-center"
+                activeOpacity={0.8}
+              >
+                <Text className="text-white font-bold text-base">Xem vị trí hiện tại</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
         ListEmptyComponent={
-          <Text className="text-center text-gray-500 mt-8">Không tìm thấy tài sản phù hợp.</Text>
-        }
-      />
+          <Text className="text-center text-gray-600 mt-8">Không tìm thấy Asset phù hợp.</Text>
+        } */}
+      {/* /> */}
+
+      <View className="flex-1 justify-center items-center px-4">
+        {newPrefixID && (
+          <TouchableOpacity
+            onPress={() => router.push(`/asset/${newPrefixID}`)}
+            className="mb-6 bg-white rounded-lg py-4 px-8"
+          >
+            <Text className="text-center text-gray-600">
+              Mã lô hàng mới nhận: <Text className="font-bold">{newPrefixID}</Text>
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };

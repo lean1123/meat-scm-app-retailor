@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
+import SellScreen from '../sell/index';
 
 const SellTab = () => {
   return (
-    <View>
-      <Text>SellTab</Text>
+    <View className="flex-1">
+      <SellScreen />
     </View>
   );
 };

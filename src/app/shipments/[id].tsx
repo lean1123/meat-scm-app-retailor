@@ -1,11 +1,9 @@
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import MapView, { Marker, Polyline } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapWithRoute from '@/src/components/map/MapWithRoute';
-import MapView from 'react-native-maps';
 
-// Fake data cho demo
 const FAKE_SHIPMENT = {
   id: 'SHP-001',
   name: 'Chuyến hàng 1',
@@ -16,21 +14,46 @@ const FAKE_SHIPMENT = {
   history: [
     { time: '2025-09-15 08:00', location: 'Kho tổng A', status: 'Đã xuất kho' },
     { time: '2025-09-15 10:00', location: 'Trên đường', status: 'Đang vận chuyển' },
-    // Nếu đã nhận thì thêm trạng thái nhận
-    // { time: '2025-09-15 12:00', location: 'Cửa hàng B', status: 'Đã nhận' },
   ],
+};
+
+const pointA = {
+  latitude: 10.7769,
+  longitude: 106.6954,
+};
+
+const pointB = {
+  latitude: 10.7794,
+  longitude: 106.6982,
 };
 
 const ShipmentDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const shipment = FAKE_SHIPMENT; // Thay bằng fetch theo id nếu có API
+  const shipment = FAKE_SHIPMENT;
+  const [currentLocation, setCurrentLocation] = React.useState(pointA);
 
   const isDelivered = shipment.status === 'Đã nhận';
 
   return (
     <ScrollView className="flex-1 bg-gray-100" contentContainerStyle={{ padding: 16 }}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <MapView className="w-full h-full" />
+      <SafeAreaView style={{ flex: 1, height: 400 }}>
+        <MapView
+          provider="google"
+          style={styles.map}
+          initialRegion={{
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02,
+          }}
+        >
+          <Marker
+            coordinate={pointB}
+            title={'Điểm B'}
+            description={'Vị trí kết thúc'}
+            pinColor={'blue'}
+          />
+        </MapView>
       </SafeAreaView>
 
       <Text className="text-lg font-bold my-4">Lịch sử vận chuyển</Text>
@@ -75,3 +98,15 @@ const ShipmentDetail = () => {
 };
 
 export default ShipmentDetail;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    ...StyleSheet.absoluteFillObject,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+    ...StyleSheet.absoluteFillObject,
+  },
+});

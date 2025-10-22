@@ -67,6 +67,8 @@ const InitialLayout = () => {
             <Stack.Screen name="asset/index" options={{ title: 'Tài sản' }} />
             <Stack.Screen name="asset/sell" options={{ title: 'Hàng Hóa' }} />
             <Stack.Screen name="asset/split" options={{ title: 'Chia đơn hàng' }} />
+            <Stack.Screen name="sell/index" options={{ title: 'Lô hàng trưng bày' }} />
+            <Stack.Screen name="sell/[id]" options={{ title: 'Chi tiết lô hàng' }} />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
